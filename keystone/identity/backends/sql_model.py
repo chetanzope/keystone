@@ -33,13 +33,15 @@ class User(sql.ModelBase, sql.ModelDictMixinWithExtras):
     __tablename__ = 'user'
     attributes = ['id', 'name', 'domain_id', 'password', 'enabled',
                   'default_project_id', 'password_expires_at']
-    readonly_attributes = ['id', 'password_expires_at', 'password']
+    readonly_attributes = ['id', 'password_expires_at', 'password','first_name','last_name']
     resource_options_registry = iro.USER_OPTIONS_REGISTRY
     id = sql.Column(sql.String(64), primary_key=True)
     domain_id = sql.Column(sql.String(64), nullable=False)
     _enabled = sql.Column('enabled', sql.Boolean)
     extra = sql.Column(sql.JsonBlob())
     default_project_id = sql.Column(sql.String(64), index=True)
+    first_name = sql.Column(sql.String(255), nullable=False)
+    last_name = sql.Column(sql.String(255), nullable=False)
     _resource_option_mapper = orm.relationship(
         'UserOption',
         single_parent=True,
@@ -89,6 +91,9 @@ class User(sql.ModelBase, sql.ModelDictMixinWithExtras):
     @name.expression
     def name(cls):
         return LocalUser.name
+	
+
+
 
     # password properties
     @property
@@ -264,7 +269,7 @@ class User(sql.ModelBase, sql.ModelDictMixinWithExtras):
 
 class LocalUser(sql.ModelBase, sql.ModelDictMixin):
     __tablename__ = 'local_user'
-    attributes = ['id', 'user_id', 'domain_id', 'name']
+    attributes = ['id', 'user_id', 'domain_id', 'name','first_name']
     id = sql.Column(sql.Integer, primary_key=True)
     user_id = sql.Column(sql.String(64))
     domain_id = sql.Column(sql.String(64), nullable=False)
